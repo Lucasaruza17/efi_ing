@@ -57,4 +57,10 @@ docker-compose exec web python populate.py
 
 
 **Capturas**
+<img width="1913" height="951" alt="inicio" src="https://github.com/user-attachments/assets/7077cc97-7bde-4fb5-b5ee-28d1ceca3dd2" />
+<img width="1908" height="951" alt="redoc" src="https://github.com/user-attachments/assets/3f73af46-6ddd-4b9b-9366-5f2014378d68" />
+<img width="1919" height="916" alt="schema" src="https://github.com/user-attachments/assets/6fdb3d91-7d37-4a63-b86d-20071e7f8830" />
+<img width="1916" height="956" alt="admin" src="https://github.com/user-attachments/assets/acab8c67-8723-4bfa-b164-e91e63112cc9" />
+<img width="1913" height="958" alt="api" src="https://github.com/user-attachments/assets/83d7a52e-70d3-441c-9660-7f57503c4b04" />
+
 

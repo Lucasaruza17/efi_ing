@@ -1,4 +1,4 @@
-# 🦇 La Frikicueva - Backend (API REST)
+#  La Frikicueva - Backend (API REST)
 
 **Evaluación Final Integradora (EFI) - Ingeniería de Software 2026**
 
@@ -54,5 +54,7 @@ docker-compose exec web python populate.py
 **Swagger (Documentación): http://localhost:8000/api/docs/swagger/**
 
 **Panel de Administración: http://localhost:8000/admin/**
+
+
 **Capturas**
 

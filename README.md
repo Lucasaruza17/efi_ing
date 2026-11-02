@@ -4,12 +4,12 @@
 
 Este proyecto constituye el backend para "La Frikicueva", una tienda especializada en cómics, mangas y libros de fantasía épica. Desarrollado con Django y Django REST Framework, expone los datos necesarios para ser consumidos por un frontend independiente, cumpliendo con los estándares de autenticación, filtrado y documentación.
 
-## 👥 Equipo de Desarrollo
+## Equipo de Desarrollo
 * Lucas Aruza
 * Mateo Gonzalez
 
 
-## 🗄️ Planificación y Justificación de la Base de Datos
+## Planificación y Justificación de la Base de Datos
 
 El sistema cuenta con **10 modelos** interrelacionados, diseñados para abarcar la lógica de negocio de una tienda literaria:
 
@@ -30,7 +30,7 @@ El sistema cuenta con **10 modelos** interrelacionados, diseñados para abarcar 
 10. **Reseña:** 
     * *Relaciones:* `ForeignKey` a `Producto` y `Cliente`. Permite a los usuarios dejar calificaciones (1-5) y comentarios.
 
-## 🚀 Instalación y Ejecución (Docker & uv)
+## Instalación y Ejecución (Docker & uv)
 
 El proyecto utiliza `uv` como gestor de paquetes dentro de un entorno Dockerizado.
 

@@ -50,7 +50,6 @@ class Producto(models.Model):
     titulo = models.CharField(max_length=200)
     isbn = models.CharField(max_length=20, unique=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
-    # PROTECT: no se puede borrar una categoría/editorial que todavía tiene productos
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name='productos')
     editorial = models.ForeignKey(Editorial, on_delete=models.PROTECT, related_name='productos')
     autores = models.ManyToManyField(Autor, related_name='obras')
@@ -105,7 +104,6 @@ class Pedido(models.Model):
         return f'Pedido #{self.pk} - {self.cliente} ({self.get_estado_display()})'
 
     def recalcular_total(self):
-        """Suma cantidad * precio_unitario de todos los detalles y guarda el total."""
         total = self.detalles.aggregate(
             total=Sum(
                 F('cantidad') * F('precio_unitario'),
@@ -118,7 +116,6 @@ class Pedido(models.Model):
 
     @transaction.atomic
     def cancelar(self):
-        """Cancela el pedido y devuelve el stock de cada producto al inventario."""
         for detalle in self.detalles.all():
             detalle.devolver_stock()
         self.estado = 'C'
@@ -129,7 +126,6 @@ class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
     cantidad = models.PositiveIntegerField()
-    # Se "congela" el precio al momento de la compra (auditoría)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:

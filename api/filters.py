@@ -5,8 +5,6 @@ from .models import Producto
 
 
 class ProductoFilter(df.FilterSet):
-    """Filtros del catálogo: ?categoria=1&editorial=2&autor=3&precio_min=5000&precio_max=20000&en_stock=true"""
-
     precio_min = df.NumberFilter(field_name='precio', lookup_expr='gte')
     precio_max = df.NumberFilter(field_name='precio', lookup_expr='lte')
     autor = df.NumberFilter(field_name='autores__id')

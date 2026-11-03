@@ -17,14 +17,13 @@ from .serializers import (AutorSerializer, CategoriaSerializer, ClienteSerialize
                           ProductoSerializer, RegistroSerializer, ResenaSerializer)
 
 
-# ---------------------------------------------------------------- Mixins
 class SoloLoPropioMixin:
     """El staff ve todo; el resto de los usuarios solo ve los registros que le pertenecen."""
     campo_dueno = 'usuario'
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if getattr(self, 'swagger_fake_view', False):  # generación del esquema OpenAPI
+        if getattr(self, 'swagger_fake_view', False):
             return queryset.none()
         if self.request.user.is_staff:
             return queryset

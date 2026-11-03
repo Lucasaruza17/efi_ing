@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-cq15qrizm12l6^qmj_esb)o(hbmum-bhc1vvbl8xh$+)24oyv-'
+SECRET_KEY = os.getenv('SECRET_KEY') or 'django-insecure-solo-para-desarrollo-local-cambiar-en-produccion'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in (os.getenv('ALLOWED_HOSTS') or 'localhost,127.0.0.1,0.0.0.0').split(',')
+    if h.strip()
+]
 
 
 # Application definition
@@ -86,7 +91,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.getenv('SQLITE_PATH') or BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -113,9 +118,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-ar'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Argentina/Cordoba'
 
 USE_I18N = True
 
@@ -127,19 +132,24 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
+# Después de iniciar/cerrar sesión en la API navegable (/api-auth/login/)
+LOGIN_REDIRECT_URL = '/api/'
+LOGOUT_REDIRECT_URL = '/api/'
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
-# Habilitar CORS para tu frontend (ajusta el puerto si es distinto)
+
+# CORS: orígenes del frontend permitidos (por defecto React/Next en 3000 y Vite en 5173).
+# Se pueden sumar más con la variable CORS_ALLOWED_ORIGINS separada por comas.
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+] + [
+    o.strip()
+    for o in (os.getenv('CORS_ALLOWED_ORIGINS') or '').split(',')
+    if o.strip()
 ]
 
 # Configuración de Django Rest Framework
@@ -164,7 +174,8 @@ REST_FRAMEWORK = {
 # Configuración de drf-spectacular (Swagger/Redoc)
 SPECTACULAR_SETTINGS = {
     'TITLE': 'La Frikicueva API',
-    'DESCRIPTION': 'API para tienda de Cómics, Mangas y Libros',
+    'DESCRIPTION': 'API REST para la tienda de Cómics, Mangas y Libros de fantasía. '
+                   'Autenticación por Token (header "Authorization: Token <token>") o por Sesión.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'REDOC_DIST': 'SIDECAR',

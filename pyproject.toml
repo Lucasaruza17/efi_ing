@@ -1,0 +1,17 @@
+[project]
+name = "la-frikicueva-backend"
+version = "1.0.0"
+description = "API REST de La Frikicueva, tienda de cómics, mangas y libros de fantasía (EFI Ingeniería de Software 2026)."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.1.2",
+    "djangorestframework>=3.18.3",
+    "django-cors-headers>=4.9.0",
+    "django-filter>=26.2",
+    "drf-spectacular>=0.30.0",
+    "drf-spectacular-sidecar",
+]
+
+[tool.uv]
+package = false

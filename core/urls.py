@@ -22,6 +22,9 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+
+    # Login/logout por sesión para la API navegable
+    path('api-auth/', include('rest_framework.urls')),
     
     # Vista de Bienvenida nativa de Django
     path('', TemplateView.as_view(template_name="index.html"), name='home'),

@@ -37,14 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Terceros
     'rest_framework',
     'rest_framework.authtoken', # Para autenticación por tokens
     'corsheaders',
     'django_filters',
     'drf_spectacular',
-    # Local
     'api',
+    'drf_spectacular_sidecar',
 ]
 
 # Especificar el modelo de usuario personalizado ANTES de la primera migración
@@ -164,8 +163,10 @@ REST_FRAMEWORK = {
 
 # Configuración de drf-spectacular (Swagger/Redoc)
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'La Frikicueva  API',
+    'TITLE': 'La Frikicueva API',
     'DESCRIPTION': 'API para tienda de Cómics, Mangas y Libros',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'REDOC_DIST': 'SIDECAR',
+    'SWAGGER_UI_DIST': 'SIDECAR',
 }

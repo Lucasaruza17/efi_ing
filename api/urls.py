@@ -1,9 +1,8 @@
 from django.urls import include, path
-from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import DefaultRouter
 
 from .views import (AutorViewSet, CategoriaViewSet, ClienteViewSet, DetallePedidoViewSet,
-                    EditorialViewSet, InventarioViewSet, LogoutView, PedidoViewSet,
+                    EditorialViewSet, InventarioViewSet, LoginView, LogoutView, MeView, PedidoViewSet,
                     ProductoViewSet, RegistroView, ResenaViewSet)
 
 router = DefaultRouter()
@@ -20,7 +19,8 @@ router.register(r'resenas', ResenaViewSet)
 urlpatterns = [
     # Autenticación por token
     path('auth/registro/', RegistroView.as_view(), name='registro'),
-    path('auth/login/', obtain_auth_token, name='login'),
+    path('auth/login/', LoginView.as_view(), name='login'),
+    path('auth/me/', MeView.as_view(), name='me'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('', include(router.urls)),
 ]

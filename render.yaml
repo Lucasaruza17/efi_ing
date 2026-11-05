@@ -1,23 +1,27 @@
-databases:
-  - name: la-frikicueva-db
-    databaseName: la_frikicueva
-    user: la_frikicueva
-    plan: free
-
 services:
   - type: web
     name: la-frikicueva-api
-    runtime: docker
+    runtime: python
     plan: free
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
+    buildCommand: bash build.sh
+    startCommand: gunicorn core.wsgi:application
     healthCheckPath: /api/productos/
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
       - key: DEBUG
         value: "False"
       - key: SECRET_KEY
         generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
-          name: la-frikicueva-db
-          property: connectionString
+      - key: DATABASE_URL          # URI del Session pooler de Supabase
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS  # URL de Vercel, ej. https://la-frikicueva.vercel.app
+        sync: false
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@frikicueva.com
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: "*"

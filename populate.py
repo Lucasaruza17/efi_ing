@@ -14,17 +14,17 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
 
-from api.models import (Autor, Categoria, Cliente, DetallePedido, Editorial,  # noqa: E402
+from api.models import (Autor, Categoria, Cliente, DetallePedido, Editorial, 
                         Inventario, Pedido, Producto, Resena, UsuarioCustom)
 
 
 def poblar():
     print("Creando datos para La Frikicueva...")
 
-    # Categorías
+    # Categorias
     cat_comic, _ = Categoria.objects.get_or_create(nombre="Cómic", defaults={"descripcion": "Cómics de superhéroes y occidentales."})
     cat_manga, _ = Categoria.objects.get_or_create(nombre="Manga", defaults={"descripcion": "Historietas de origen japonés."})
-    cat_libro, _ = Categoria.objects.get_or_create(nombre="Fantasía Épica", defaults={"descripcion": "Novelas de fantasía y ciencia ficción."})
+    cat_libro, _ = Categoria.objects.get_or_create(nombre="Libros", defaults={"descripcion": "Novelas de fantasía y ciencia ficción."})
 
     # Editoriales
     ed_panini, _ = Editorial.objects.get_or_create(nombre="Panini Comics", defaults={"pais": "Italia"})

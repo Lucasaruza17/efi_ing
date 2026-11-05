@@ -15,8 +15,8 @@ class Categoria(models.Model):
 
     class Meta:
         ordering = ['nombre']
-        verbose_name = 'categoría'
-        verbose_name_plural = 'categorías'
+        verbose_name = 'categoria'
+        verbose_name_plural = 'categorias'
 
     def __str__(self):
         return self.nombre
@@ -53,7 +53,7 @@ class Producto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name='productos')
     editorial = models.ForeignKey(Editorial, on_delete=models.PROTECT, related_name='productos')
     autores = models.ManyToManyField(Autor, related_name='obras')
-    imagen_url = models.URLField(max_length=500, blank=True, help_text='URL de la portada (opcional).')
+    imagen_url = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         ordering = ['titulo']

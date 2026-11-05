@@ -3,6 +3,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -14,7 +15,8 @@ from .permissions import EsDuenoOStaff, EsStaffOSoloLectura
 from .serializers import (AutorSerializer, CategoriaSerializer, ClienteSerializer,
                           DetallePedidoSerializer, EditorialSerializer, InventarioSerializer,
                           PedidoListSerializer, PedidoSerializer, ProductoListSerializer,
-                          ProductoSerializer, RegistroSerializer, ResenaSerializer)
+                          ProductoSerializer, RegistroSerializer, ResenaSerializer,
+                          UsuarioSerializer)
 
 
 class SoloLoPropioMixin:
@@ -112,7 +114,7 @@ class InventarioViewSet(viewsets.ModelViewSet):
     queryset = Inventario.objects.select_related('producto')
     serializer_class = InventarioSerializer
     permission_classes = [EsStaffOSoloLectura]
-    filterset_fields = ['pasillo']
+    filterset_fields = ['pasillo', 'producto']
     search_fields = ['producto__titulo', 'pasillo']
     ordering_fields = ['cantidad_disponible']
 
@@ -273,7 +275,7 @@ class RegistroView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'usuario': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'token': token.key, 'usuario': UsuarioSerializer(user).data}, status=status.HTTP_201_CREATED)
 
 
 class LogoutView(APIView):
@@ -284,3 +286,24 @@ class LogoutView(APIView):
     def post(self, request):
         Token.objects.filter(user=request.user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LoginView(ObtainAuthToken):
+    """Devuelve el token (clave `token`, igual que antes) y los datos básicos del usuario."""
+
+    @extend_schema(responses={200: OpenApiTypes.OBJECT})
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key, 'usuario': UsuarioSerializer(user).data})
+
+
+class MeView(APIView):
+    """Datos del usuario autenticado; sirve para validar un token guardado y saber si es staff."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    @extend_schema(responses=UsuarioSerializer)
+    def get(self, request):
+        return Response(UsuarioSerializer(request.user).data)

@@ -156,3 +156,11 @@ class RegistroSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return UsuarioCustom.objects.create_user(**validated_data)
+
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    """Datos básicos del usuario autenticado (el front usa is_staff para mostrar el panel de administración)."""
+    class Meta:
+        model = UsuarioCustom
+        fields = ('id', 'username', 'email', 'telefono', 'is_staff')
+        read_only_fields = fields

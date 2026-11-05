@@ -122,6 +122,37 @@ class AutenticacionTests(BaseTestCase):
         self.assertEqual(self.client.get('/api/pedidos/').status_code, 401)
 
 
+class SesionParaElFrontTests(BaseTestCase):
+    def test_login_devuelve_token_y_si_es_staff(self):
+        r = self.client.post('/api/auth/login/', {'username': 'admin_test', 'password': 'Clave#12345'}, format='json')
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.data['token'])
+        self.assertTrue(r.data['usuario']['is_staff'])
+
+    def test_login_con_clave_incorrecta_da_400(self):
+        r = self.client.post('/api/auth/login/', {'username': 'lucas', 'password': 'mal'}, format='json')
+        self.assertEqual(r.status_code, 400)
+
+    def test_me_requiere_token_y_devuelve_usuario(self):
+        self.assertEqual(self.client.get('/api/auth/me/').status_code, 401)
+        token = self.client.post('/api/auth/login/', {'username': 'lucas', 'password': 'Clave#12345'}, format='json').data['token']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {token}')
+        r = self.client.get('/api/auth/me/')
+        self.assertEqual((r.status_code, r.data['username'], r.data['is_staff']), (200, 'lucas', False))
+
+    def test_producto_acepta_imagen_url_opcional(self):
+        token = self.client.post('/api/auth/login/', {'username': 'admin_test', 'password': 'Clave#12345'}, format='json').data['token']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {token}')
+        datos = {'titulo': 'Nuevo', 'isbn': '999', 'precio': '100.00', 'categoria': self.categoria.id,
+                 'editorial': self.editorial.id, 'autores': [self.autor.id], 'imagen_url': 'https://ejemplo.com/p.jpg'}
+        r = self.client.post('/api/productos/', datos, format='json')
+        self.assertEqual((r.status_code, r.data['imagen_url']), (201, 'https://ejemplo.com/p.jpg'))
+
+    def test_inventario_se_filtra_por_producto(self):
+        r = self.client.get(f'/api/inventario/?producto={self.producto.id}')
+        self.assertEqual(r.data['count'], 1)
+
+
 class PedidosTests(BaseTestCase):
     def test_pedidos_requieren_login(self):
         self.assertEqual(self.client.get('/api/pedidos/').status_code, 401)

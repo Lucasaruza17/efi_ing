@@ -53,6 +53,7 @@ class Producto(models.Model):
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name='productos')
     editorial = models.ForeignKey(Editorial, on_delete=models.PROTECT, related_name='productos')
     autores = models.ManyToManyField(Autor, related_name='obras')
+    imagen_url = models.URLField(max_length=500, blank=True, help_text='URL de la portada (opcional).')
 
     class Meta:
         ordering = ['titulo']

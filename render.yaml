@@ -1,0 +1,23 @@
+databases:
+  - name: la-frikicueva-db
+    databaseName: la_frikicueva
+    user: la_frikicueva
+    plan: free
+
+services:
+  - type: web
+    name: la-frikicueva-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/productos/
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: la-frikicueva-db
+          property: connectionString

@@ -23,3 +23,5 @@ services:
         value: admin@frikicueva.com
       - key: DJANGO_SUPERUSER_PASSWORD
         sync: false
+      - key: ALLOWED_HOSTS
+        value: "*"

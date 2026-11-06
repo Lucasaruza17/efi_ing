@@ -38,6 +38,16 @@ def poblar():
     aut_miura, _ = Autor.objects.get_or_create(nombre="Kentaro Miura", defaults={"biografia": "Mangaka creador de Berserk."})
     aut_toriyama, _ = Autor.objects.get_or_create(nombre="Akira Toriyama", defaults={"biografia": "Mangaka creador de Dragon Ball."})
 
+    # Portadas por ISBN (links directos a la imagen; se pueden cambiar después desde el panel de gestión)
+    portadas = {
+        "978-84-1101-000-1": "https://images.cdn2.buscalibre.com/fit-in/660x660/8f/cf/8fcf42db98b8e2741cb4c2c2848d353f.jpg",
+        "978-84-1101-000-2": "https://images.cdn3.buscalibre.com/fit-in/660x660/b1/0c/b10c11bb8e79371aca5501de04da669f.jpg",
+        "978-84-450-0066-3": "https://images.cdn2.buscalibre.com/fit-in/660x660/3f/da/3fda62db53fae681fe69ec420d11570a.jpg",
+        "978-84-1101-000-4": "https://http2.mlstatic.com/D_NQ_NP_967411-MLU69862958341_062023-O.webp",
+        "978-84-1101-000-5": "https://http2.mlstatic.com/D_NQ_NP_747664-MLA100961771641_122025-O.webp",
+        "978-84-1101-000-6": "https://http2.mlstatic.com/D_NQ_NP_940430-MLA81328294773_122024-O.webp",
+    }
+
     # (título, isbn, precio, categoría, editorial, autor, stock, pasillo)
     catalogo = [
         ("Spider-Man: La Última Cacería de Kraven", "978-84-1101-000-1", 15500, cat_comic, ed_panini, aut_stan, 10, "A1"),
@@ -56,6 +66,10 @@ def poblar():
         if creado:
             producto.autores.add(autor)
             Inventario.objects.create(producto=producto, cantidad_disponible=stock, pasillo=pasillo)
+        # También completa la portada en productos que ya existían, pero sin pisar una que se haya cargado a mano.
+        if not producto.imagen_url and isbn in portadas:
+            producto.imagen_url = portadas[isbn]
+            producto.save(update_fields=["imagen_url"])
         productos.append(producto)
 
     # Cliente de prueba con un pedido y una reseña
